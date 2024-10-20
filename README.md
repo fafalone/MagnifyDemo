@@ -8,7 +8,7 @@ This is a quick port of the Windows SDK example for the [Magnification API](http
 **UPDATE:** Version 1.1 adds undocumented smoothing functionality. There's a new `useSmoothing` setting at the top of the mMagnifier.bas module.
 
 >[!WARNING]
->The `useSmoothing` setting does not work in the VB6 IDE. It will crash. However it works in compiled VB6 exes and twinBASIC IDE.
+>The `useSmoothing` setting might not work in the VB6 IDE. It was crashing, every time, but when I came back later to debug properly, I could no longer reproduce the crash. However it always worked in compiled VB6 exes and twinBASIC IDE.
 
 There's two versions:
 
