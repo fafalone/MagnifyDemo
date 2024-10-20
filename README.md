@@ -12,3 +12,7 @@ There's two versions:
 2) A backported VB6 version, which uses local copies of the defs. It's still 64bit compatible and can readily be imported to tB and compiled for either 32 or 64 bit.
 
 At the top of the code you'll find options for the zoom factor (default 2.0) and whether to invert colors (default false).
+
+>[!NOTE]
+>MSDN documentation says the Magnification API is not supported under WOW64; but at least for the basic functionality in this project, it works without issue in both VB6 and tB 32bit on my 64bit Win10.
+>It's recommended you use the twinBASIC version in 64bit mode for 64bit Windows just in case this isn't true in all versions or you want to expand functionality.
