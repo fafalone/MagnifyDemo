@@ -5,6 +5,11 @@ Screen Magnification API Demo
 
 This is a quick port of the Windows SDK example for the [Magnification API](https://learn.microsoft.com/en-us/previous-versions/windows/desktop/magapi/entry-magapi-sdk).
 
+**UPDATE:** Version 1.1 adds undocumented smoothing functionality.
+
+>[!WARNING]
+>The `useSmoothing` setting does not work in the VB6 IDE. It will crash. However it works in compiled VB6 exes and twinBASIC IDE.
+
 There's two versions:
 
 1) The original twinBASIC version, made using WinDevLib, so all APIs/UDTs/etc were already defined.
