@@ -1,7 +1,13 @@
 Attribute VB_Name = "mMagnifier"
 
+'Port of Windows SDK demo
+'Version 1.1: Added undocumented antialiasing option
+'Ported by Jon Johnson
+
 Private Const MAGFACTOR As Single = 2.0
 Private Const InvertColors As Boolean = False
+Private Const useAntialiasing As Boolean = True
+
 Private Const RESTOREDWINDOWSTYLES  = WS_SIZEBOX Or WS_SYSMENU Or WS_CLIPCHILDREN Or WS_CAPTION Or WS_MAXIMIZEBOX
 
 Private Const WindowClassName = "MagnifierWindow"
@@ -12,6 +18,7 @@ Private hwndHost As LongPtr
 Private magWindowRect As RECT
 Private hostWindowRect As RECT
 Private isFullScreen As Boolean
+
 Sub Main()
     
     If MagInitialize() = CFALSE Then
@@ -27,8 +34,7 @@ Sub Main()
     ShowWindow hwndHost, SW_NORMAL
     UpdateWindow hwndHost
     
-    Dim timerId As LongPtr
-    timerId = SetTimer(hwndHost, 0, timerInterval, AddressOf UpdateMagWindow)
+    Dim timerId As LongPtr = SetTimer(hwndHost, 0, timerInterval, AddressOf UpdateMagWindow)
     
     Dim tMSG As MSG
     Dim hr As Long
@@ -123,6 +129,10 @@ Private Function SetupMagnifier(hInst As LongPtr) As BOOL
     If hwndMag = 0 Then
         Debug.Print "Failed to create magnifier window."
         Return False
+    End If
+    
+    If useAntialiasing Then
+        MagSetLensUseBitmapSmoothing hwndMag, CTRUE
     End If
     
     Dim matrix As MAGTRANSFORM
