@@ -3,7 +3,7 @@ Screen Magnification API Demo
 
 ![image](https://github.com/user-attachments/assets/39b941dd-c311-4fee-95ef-b66e02820c9a)
 
-This is a quick port of the Windows SDK example for the Magnification API.
+This is a quick port of the Windows SDK example for the [Magnification API](https://learn.microsoft.com/en-us/previous-versions/windows/desktop/magapi/entry-magapi-sdk).
 
 There's two versions:
 
