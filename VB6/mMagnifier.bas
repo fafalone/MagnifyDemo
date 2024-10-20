@@ -1,7 +1,13 @@
 Attribute VB_Name = "mMagnifier"
 Option Explicit
+'Port of Windows SDK demo
+'Version 1.1: Added undocumented antialiasing option
+'Ported by Jon Johnson
+
 Private Const MAGFACTOR As Single = 2#
 Private Const InvertColors As Boolean = False
+Private Const useAntialiasing As Boolean = True 'WARNING: Does not work from VB6 IDE!
+
 Private Const RESTOREDWINDOWSTYLES = WS_SIZEBOX Or WS_SYSMENU Or WS_CLIPCHILDREN Or WS_CAPTION Or WS_MAXIMIZEBOX
 
 Private Const WindowClassName = "MagnifierWindow"
@@ -9,8 +15,8 @@ Private Const WindowTitle = "VB6/twinBASIC Magnifier Demo"
 Private Const timerInterval = 16
 Private hwndMag As LongPtr
 Private hwndHost As LongPtr
-Private magWindowRect As rect
-Private hostWindowRect As rect
+Private magWindowRect As RECT
+Private hostWindowRect As RECT
 Private isFullScreen As Boolean
 Sub Main()
     
@@ -47,7 +53,7 @@ Sub Main()
     MagUninitialize
 End Sub
 
-Private Function HostWndProc(ByVal hWnd As LongPtr, ByVal uMsg As Long, ByVal wParam As LongPtr, ByVal lParam As LongPtr) As LongPtr
+Private Function HostWndProc(ByVal hwnd As LongPtr, ByVal uMsg As Long, ByVal wParam As LongPtr, ByVal lParam As LongPtr) As LongPtr
     Select Case uMsg
         Case WM_KEYDOWN
             If (wParam = VK_ESCAPE) Then
@@ -60,18 +66,18 @@ Private Function HostWndProc(ByVal hWnd As LongPtr, ByVal uMsg As Long, ByVal wP
             If GET_SC_WPARAM(wParam) = SC_MAXIMIZE Then
                 GoFullScreen
             Else
-                HostWndProc = DefWindowProc(hWnd, uMsg, wParam, lParam)
+                HostWndProc = DefWindowProc(hwnd, uMsg, wParam, lParam)
             End If
             
         Case WM_DESTROY
             PostQuitMessage (0)
             
         Case WM_SIZE
-            GetClientRect hWnd, magWindowRect
+            GetClientRect hwnd, magWindowRect
             SetWindowPos hwndMag, 0, magWindowRect.Left, magWindowRect.Top, magWindowRect.Right, magWindowRect.Bottom, 0
             
         Case Else
-            HostWndProc = DefWindowProc(hWnd, uMsg, wParam, lParam)
+            HostWndProc = DefWindowProc(hwnd, uMsg, wParam, lParam)
     End Select
 End Function
 'Remove after next WDL update
@@ -124,6 +130,10 @@ Private Function SetupMagnifier(hInst As LongPtr) As BOOL
         Exit Function
     End If
     
+    If useAntialiasing Then
+        MagSetLensUseBitmapSmoothing hwndMag, CTRUE
+    End If
+    
     Dim matrix As MAGTRANSFORM
     matrix.v(0, 0) = MAGFACTOR
     matrix.v(1, 1) = MAGFACTOR
@@ -148,14 +158,14 @@ Private Function SetupMagnifier(hInst As LongPtr) As BOOL
     SetupMagnifier = ret
 End Function
 
-Private Sub UpdateMagWindow(ByVal hWnd As LongPtr, ByVal uMsg As Long, ByVal idEvent As LongPtr, ByVal dwTime As Long)
+Private Sub UpdateMagWindow(ByVal hwnd As LongPtr, ByVal uMsg As Long, ByVal idEvent As LongPtr, ByVal dwTime As Long)
     Dim mousePoint As POINT
     GetCursorPos mousePoint
     
     Dim width As Long: width = (magWindowRect.Right - magWindowRect.Left) / MAGFACTOR
     Dim height As Long: height = (magWindowRect.Bottom - magWindowRect.Top) / MAGFACTOR
     
-    Dim sourceRect As rect
+    Dim sourceRect As RECT
     sourceRect.Left = mousePoint.X - width / 2
     sourceRect.Top = mousePoint.Y - height / 2
     

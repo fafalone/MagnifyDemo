@@ -5,6 +5,7 @@ Module=mDefs; mDefs.bas
 Startup="Sub Main"
 HelpFile=""
 Title="MagnifyDemoVB"
+ExeName32="MagnifyDemoVB.exe"
 Command32=""
 Name="MagnifyDemoVB"
 HelpContextID="0"

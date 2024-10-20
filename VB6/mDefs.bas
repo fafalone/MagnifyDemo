@@ -6,7 +6,7 @@ Public Enum LongPtr
 End Enum
 #End If
 
-Public Type rect
+Public Type RECT
     Left As Long
     Top As Long
     Right As Long
@@ -102,7 +102,7 @@ Public Enum ShowWindow
 End Enum
 
 Public Type Msg
-    hWnd        As LongPtr
+    hwnd        As LongPtr
     message     As Long
     wParam      As LongPtr
     lParam      As LongPtr
@@ -233,7 +233,9 @@ Public Declare PtrSafe Function MagSetWindowSource Lib "magnification.dll" (ByVa
 Public Declare PtrSafe Function SetWindowLong Lib "user32" Alias "SetWindowLongPtrW" (ByVal hWnd As LongPtr, ByVal nIndex As GWL_INDEX, ByVal dwNewLong As LongPtr) As LongPtr
 #Else
 Public Declare PtrSafe Function MagSetWindowSource Lib "magnification.dll" (ByVal hwnd As LongPtr, ByVal rectLeft As Long, ByVal rectRight As Long, ByVal rectTop As Long, ByVal rectBottom As Long) As BOOL
-Public Declare Function SetWindowLong Lib "user32" Alias "SetWindowLongW" (ByVal hWnd As Long, ByVal nIndex As GWL_INDEX, ByVal dwNewLong As Long) As Long
+Public Declare PtrSafe Function MagSetLensUseBitmapSmoothing Lib "magnification.dll" (ByVal hwnd As LongPtr, ByVal isSmoothing As BOOL) As BOOL
+Public Declare PtrSafe Function MagSetFullscreenUseBitmapSmoothing Lib "magnification.dll" (ByVal useSmoothing As BOOL) As BOOL
+Public Declare Function SetWindowLong Lib "user32" Alias "SetWindowLongW" (ByVal hwnd As Long, ByVal nIndex As GWL_INDEX, ByVal dwNewLong As Long) As Long
 #End If
 Public Declare PtrSafe Function InvalidateRect Lib "user32" (ByVal hWnd As LongPtr, lpRect As Any, ByVal bErase As BOOL) As BOOL
 Public Declare PtrSafe Function SetWindowPos Lib "user32" (ByVal hWnd As LongPtr, ByVal hWndInsertAfter As LongPtr, ByVal X As Long, ByVal Y As Long, ByVal CX As Long, ByVal CY As Long, ByVal wFlags As SWP_Flags) As Long
@@ -258,34 +260,36 @@ Public Declare PtrSafe Function LoadCursorW Lib "user32" (ByVal hInstance As Lon
 #Else
 Public Declare Function MagInitialize Lib "magnification.dll" () As BOOL
 Public Declare Function MagUninitialize Lib "magnification.dll" () As BOOL
-Public Declare Function MagSetWindowTransform Lib "magnification.dll" (ByVal hWnd As LongPtr, pTransform As MAGTRANSFORM) As BOOL
-Public Declare Function MagSetColorEffect Lib "magnification.dll" (ByVal hWnd As LongPtr, pEffect As MAGCOLOREFFECT) As BOOL
+Public Declare Function MagSetWindowTransform Lib "magnification.dll" (ByVal hwnd As LongPtr, pTransform As MAGTRANSFORM) As BOOL
+Public Declare Function MagSetColorEffect Lib "magnification.dll" (ByVal hwnd As LongPtr, pEffect As MAGCOLOREFFECT) As BOOL
 #If Win64 Then
-Public Declare Function MagSetWindowSource Lib "magnification.dll" (ByVal hWnd As LongPtr, rect As rect) As BOOL
-Public Declare Function SetWindowLong Lib "user32" Alias "SetWindowLongPtrW" (ByVal hWnd As LongPtr, ByVal nIndex As GWL_INDEX, ByVal dwNewLong As LongPtr) As LongPtr
+Public Declare Function MagSetWindowSource Lib "magnification.dll" (ByVal hwnd As LongPtr, RECT As RECT) As BOOL
+Public Declare Function SetWindowLong Lib "user32" Alias "SetWindowLongPtrW" (ByVal hwnd As LongPtr, ByVal nIndex As GWL_INDEX, ByVal dwNewLong As LongPtr) As LongPtr
 #Else
-Public Declare Function MagSetWindowSource Lib "magnification.dll" (ByVal hWnd As LongPtr, ByVal rectLeft As Long, ByVal rectRight As Long, ByVal rectTop As Long, ByVal rectBottom As Long) As BOOL
-Public Declare Function SetWindowLong Lib "user32" Alias "SetWindowLongW" (ByVal hWnd As Long, ByVal nIndex As GWL_INDEX, ByVal dwNewLong As Long) As Long
+Public Declare Function MagSetWindowSource Lib "magnification.dll" (ByVal hwnd As LongPtr, ByVal rectLeft As Long, ByVal rectRight As Long, ByVal rectTop As Long, ByVal rectBottom As Long) As BOOL
+Public Declare Function MagSetLensUseBitmapSmoothing Lib "magnification.dll" (ByVal hwnd As LongPtr, ByVal isSmoothing As BOOL) As BOOL
+Public Declare Function MagSetFullscreenUseBitmapSmoothing Lib "magnification.dll" (ByVal useSmoothing As BOOL) As BOOL
+Public Declare Function SetWindowLong Lib "user32" Alias "SetWindowLongW" (ByVal hwnd As Long, ByVal nIndex As GWL_INDEX, ByVal dwNewLong As Long) As Long
 #End If
-Public Declare Function InvalidateRect Lib "user32" (ByVal hWnd As LongPtr, lpRect As Any, ByVal bErase As BOOL) As BOOL
-Public Declare Function SetWindowPos Lib "user32" (ByVal hWnd As LongPtr, ByVal hWndInsertAfter As LongPtr, ByVal X As Long, ByVal Y As Long, ByVal CX As Long, ByVal CY As Long, ByVal wFlags As SWP_Flags) As Long
+Public Declare Function InvalidateRect Lib "user32" (ByVal hwnd As LongPtr, lpRect As Any, ByVal bErase As BOOL) As BOOL
+Public Declare Function SetWindowPos Lib "user32" (ByVal hwnd As LongPtr, ByVal hWndInsertAfter As LongPtr, ByVal X As Long, ByVal Y As Long, ByVal CX As Long, ByVal CY As Long, ByVal wFlags As SWP_Flags) As Long
 Public Declare Function GetSystemMetrics Lib "user32" (ByVal nIndex As Long) As Long
-Public Declare Function ShowWindow Lib "user32" (ByVal hWnd As LongPtr, ByVal nCmdShow As ShowWindow) As Long
-Public Declare Function UpdateWindow Lib "user32" (ByVal hWnd As LongPtr) As BOOL
-Public Declare Function SetTimer Lib "user32" (ByVal hWnd As LongPtr, ByVal nIDEvent As LongPtr, ByVal uElapse As Long, ByVal lpTimerFunc As LongPtr) As LongPtr
-Public Declare Function KillTimer Lib "user32" (ByVal hWnd As LongPtr, ByVal nIDEvent As LongPtr) As BOOL
-Public Declare Function GetMessage Lib "user32" Alias "GetMessageW" (lpmsg As Msg, ByVal hWnd As LongPtr, ByVal wMsgFilterMin As Long, ByVal wMsgFilterMax As Long) As Long
+Public Declare Function ShowWindow Lib "user32" (ByVal hwnd As LongPtr, ByVal nCmdShow As ShowWindow) As Long
+Public Declare Function UpdateWindow Lib "user32" (ByVal hwnd As LongPtr) As BOOL
+Public Declare Function SetTimer Lib "user32" (ByVal hwnd As LongPtr, ByVal nIDEvent As LongPtr, ByVal uElapse As Long, ByVal lpTimerFunc As LongPtr) As LongPtr
+Public Declare Function KillTimer Lib "user32" (ByVal hwnd As LongPtr, ByVal nIDEvent As LongPtr) As BOOL
+Public Declare Function GetMessage Lib "user32" Alias "GetMessageW" (lpmsg As Msg, ByVal hwnd As LongPtr, ByVal wMsgFilterMin As Long, ByVal wMsgFilterMax As Long) As Long
 Public Declare Function TranslateMessage Lib "user32" (ByRef lpmsg As Msg) As BOOL
 Public Declare Function DispatchMessage Lib "user32" Alias "DispatchMessageW" (ByRef lpmsg As Msg) As LongPtr
-Public Declare Function DefWindowProc Lib "user32" Alias "DefWindowProcW" (ByVal hWnd As LongPtr, ByVal Msg As Long, ByVal wParam As LongPtr, ByVal lParam As LongPtr) As LongPtr
+Public Declare Function DefWindowProc Lib "user32" Alias "DefWindowProcW" (ByVal hwnd As LongPtr, ByVal Msg As Long, ByVal wParam As LongPtr, ByVal lParam As LongPtr) As LongPtr
 Public Declare Sub PostQuitMessage Lib "user32" (ByVal nExitCode As Long)
-Public Declare Function GetClientRect Lib "user32" (ByVal hWnd As LongPtr, lpRect As rect) As BOOL
+Public Declare Function GetClientRect Lib "user32" (ByVal hwnd As LongPtr, lpRect As RECT) As BOOL
 Public Declare Function RegisterClassExW Lib "user32" (pcWndClassEx As WNDCLASSEXW) As Integer
-Public Declare Function SetLayeredWindowAttributes Lib "user32" (ByVal hWnd As LongPtr, ByVal crKey As Long, ByVal bAlpha As Byte, ByVal dwFlags As LayeredWindowAttributes) As BOOL
+Public Declare Function SetLayeredWindowAttributes Lib "user32" (ByVal hwnd As LongPtr, ByVal crKey As Long, ByVal bAlpha As Byte, ByVal dwFlags As LayeredWindowAttributes) As BOOL
 Public Declare Function CreateWindowExW Lib "user32" (ByVal dwExStyle As WindowStylesEx, ByVal lpClassName As LongPtr, ByVal lpWindowName As LongPtr, ByVal dwStyle As WindowStyles, ByVal X As Long, ByVal Y As Long, ByVal nWidth As Long, ByVal nHeight As Long, ByVal hWndParent As LongPtr, ByVal hMenu As LongPtr, ByVal hInstance As LongPtr, lpParam As Any) As LongPtr
 Public Declare Function GetCursorPos Lib "user32" (lpPoint As POINT) As BOOL
-Public Declare Function GetDC Lib "user32" (ByVal hWnd As LongPtr) As LongPtr
-Public Declare Function ReleaseDC Lib "user32" (ByVal hWnd As LongPtr, ByVal hDC As LongPtr) As Long
+Public Declare Function GetDC Lib "user32" (ByVal hwnd As LongPtr) As LongPtr
+Public Declare Function ReleaseDC Lib "user32" (ByVal hwnd As LongPtr, ByVal hDC As LongPtr) As Long
 Public Declare Function LoadCursorW Lib "user32" (ByVal hInstance As LongPtr, ByVal lpCursorName As Any) As LongPtr
 
 #End If
